@@ -20,21 +20,23 @@ import os
 # file uploads pip install cloudinary
 import cloudinary
 import cloudinary.uploader
+from flask_swagger_ui import get_swaggerui_blueprint
+
 
 app = Flask(__name__)
 app.config['SWAGGER'] = {
-    'title' : 'Auth and Cloudinary APIs',
-    'uiversion' : 3 
+    'title': 'Auth and Cloudinary APIs',
+    'uiversion': 3
 }
 
 swagger = Swagger(app)
-# config db 
-app.config['SQLALCHEMY_DATABASE_URI']  =  'sqlite:///app.db'
+
+# Database configuration and initialization
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 db.init_app(app)
-# initialize flask migrate 
 migrate = Migrate(app, db)
 
-#jwt processes 
+# Secret key for JWT
 secret_key = base64.b64encode(os.urandom(24)).decode('utf-8')
 print(secret_key)
 
@@ -42,39 +44,39 @@ print(secret_key)
 # register route 
 @app.route('/register', methods=['POST'])
 def register():
-    '''
-    Register a new users:
+    """
+    Register a new user
     ---
-    tags: 
-       - Authentication
+    tags:
+      - Authentication
+    consumes:
+      - application/json
     parameters:
-       - name: username
-         in: body 
-         type: string 
-         required: true
-         description: User's username
-       - name: email
-         in: body 
-         type: string 
-         required: true
-         description: User's email
-       - name: password
-         in: body 
-         type: string 
-         required: true
-         description: User's password
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - username
+            - email
+            - password
+          properties:
+            username:
+              type: string
+              description: User's username
+            email:
+              type: string
+              description: User's email
+            password:
+              type: string
+              description: User's password
     responses:
-       201:
-         description: user was registered successfully 
-         schema:
-            type: object 
-            properties:
-               message:
-                  type: string 
-                  description: user was registered successfully
-        400:
-           description: Bad request, invalid input data 
-    '''
+      201:
+        description: User was registered successfully
+      400:
+        description: Invalid input data
+    """
+
     # get our json data 
     data = request.get_json()
     username = data.get('username')
