@@ -10,7 +10,7 @@ from models.dbconfig import db
 from werkzeug.security import generate_password_hash, check_password_hash
 # documentation : Swagger : pip install flasgger
 from flasgger import Swagger
-# generation token 
+# generation token / reset password 
 import random 
 import string
 import base64
@@ -21,6 +21,7 @@ import os
 import cloudinary
 import cloudinary.uploader
 from flask_swagger_ui import get_swaggerui_blueprint
+from utils.cloudinaryconfig import cloudconfig
 
 
 app = Flask(__name__)
@@ -181,6 +182,41 @@ def reset_password(token):
     
     return jsonify({'message' : 'token is invalid'})
               
+@app.route('/upload-profile-picture/<int:user_id>', methods=['POST'])
+def upload_profile_picture(user_id):
+    # json , email username password profile picture , get_data (formdata)
+    # check if a file is submitted as part of the request 
+    if 'file' not in request.files:
+        return jsonify({'message' : 'file is not part of the request'}) , 400
+    
+    file = request.files['file']
+    
+    # check if file gets uploaded 
+    if file.filename == '':
+        return jsonify({'message': 'no selected file found'}), 400
+    
+    # upload process => cloudinary 
+    try:
+        # resource_type = 'auto' :( image,video,raw) : image : video : raw        
+        result = cloudinary.uploader.upload(file, resource_type = "image")
+        print(result)
+        # secure_url 
+        '''
+        {
+            'secure_url' : 'jkhfkdhfkdhfkdf.jvkdjfkdj'
+        }
+        '''
+        image_url = result['secure_url']
+        
+        # retrieve the user 
+        user = User.query.get(user_id)
+        # update on profile pic 
+        user.profile_pic = image_url
+        db.session.commit()
+        return jsonify({'message': 'image updated successfully', "url" : image_url})
+        
+    except Exception as e:
+        return jsonify({'message': f'the error is {str(e)}'}), 500
         
         
 
