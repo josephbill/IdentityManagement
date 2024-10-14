@@ -22,6 +22,7 @@ import cloudinary
 import cloudinary.uploader
 from flask_swagger_ui import get_swaggerui_blueprint
 from utils.cloudinaryconfig import cloudconfig
+from flask_cors import CORS
 
 
 app = Flask(__name__)
@@ -29,6 +30,8 @@ app.config['SWAGGER'] = {
     'title': 'Auth and Cloudinary APIs',
     'uiversion': 3
 }
+
+CORS(app=app)
 
 swagger = Swagger(app)
 

@@ -1,1 +1,9 @@
 cloudinary
+Flask-Cors
+Flask-Migrate 
+Flask-SQLAlchemy 
+flasgger
+PyJWT
+gunicorn 
+psycopg2
+Flask
