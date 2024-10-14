@@ -36,7 +36,8 @@ CORS(app=app)
 swagger = Swagger(app)
 
 # Database configuration and initialization
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://authenticationdb_user:vkFVCnZvmFHP3UjIuMflhO9p0ikfIpRM@dpg-cs6cefd6l47c73fc5ho0-a.oregon-postgres.render.com/authenticationdb'
 db.init_app(app)
 migrate = Migrate(app, db)
 
